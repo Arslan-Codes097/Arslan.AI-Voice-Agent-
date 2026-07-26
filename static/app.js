@@ -57,10 +57,28 @@ let currentTypingController = null;
 function stopSpeaking() {
   ttsPlayer.pause();
   ttsPlayer.currentTime = 0;
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+  }
   if (currentTypingController) {
     currentTypingController.abort();
     currentTypingController = null;
   }
+}
+
+function speakWithWebSpeech(text) {
+  return new Promise((resolve) => {
+    if (!('speechSynthesis' in window)) {
+      resolve();
+      return;
+    }
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.rate = 1.0;
+    utterance.onend = resolve;
+    utterance.onerror = resolve;
+    window.speechSynthesis.speak(utterance);
+  });
 }
 
 async function typeOutText(element, text, speed) {
@@ -137,8 +155,11 @@ async function getAssistantReply(userText, speakReply) {
         ttsPromise
       ]);
     } catch (error) {
-      console.error("TTS playback failed:", error);
-      await typeOutText(pendingBubble, replyText, 15);
+      console.warn("Server TTS failed. Using browser speech synthesis fallback:", error);
+      await Promise.all([
+        typeOutText(pendingBubble, replyText, 45),
+        speakWithWebSpeech(replyText)
+      ]);
     }
     setStatus("");
   } else {

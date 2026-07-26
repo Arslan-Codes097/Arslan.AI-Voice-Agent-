@@ -11,6 +11,7 @@ from groq import Groq
 from pydantic import BaseModel
 
 import edge_tts
+from gtts import gTTS
 
 # Load GROQ_API_KEY from a local .env file when running on your own machine.
 # On Render, this same variable is set in the dashboard instead of a file.
@@ -120,15 +121,21 @@ async def text_to_speech(request: TTSRequest):
     if not clean_text:
         raise HTTPException(status_code=400, detail="No text provided for speech synthesis.")
 
-    communicator = edge_tts.Communicate(clean_text, voice=DEFAULT_TTS_VOICE)
-
-    audio_buffer = io.BytesIO()
-    async for chunk in communicator.stream():
-        if chunk["type"] == "audio":
-            audio_buffer.write(chunk["data"])
-
-    audio_buffer.seek(0)
-    return StreamingResponse(audio_buffer, media_type="audio/mpeg")
+    try:
+        communicator = edge_tts.Communicate(clean_text, voice=DEFAULT_TTS_VOICE)
+        audio_buffer = io.BytesIO()
+        async for chunk in communicator.stream():
+            if chunk["type"] == "audio":
+                audio_buffer.write(chunk["data"])
+        audio_buffer.seek(0)
+        return StreamingResponse(audio_buffer, media_type="audio/mpeg")
+    except Exception as e:
+        print("edge-tts failed (likely cloud IP block), falling back to gTTS:", e)
+        tts = gTTS(text=clean_text, lang='en')
+        audio_buffer = io.BytesIO()
+        tts.write_to_fp(audio_buffer)
+        audio_buffer.seek(0)
+        return StreamingResponse(audio_buffer, media_type="audio/mpeg")
 
 
 # Serve the frontend (index.html, style.css, app.js) as static files.
