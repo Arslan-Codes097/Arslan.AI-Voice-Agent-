@@ -15,9 +15,7 @@ A lightning-fast, dark-mode real-time voice chat agent built using FastAPI, Groq
 
 ## 📸 Screenshots
 
-| Desktop View | Mobile View |
-|:---:|:---:|
-| *[Add Desktop Screenshot Placeholder]* | *[Add Mobile Screenshot Placeholder]* |
+<img width="1862" height="914" alt="image" src="https://github.com/user-attachments/assets/da0e49b5-f666-4907-be63-2f35b64f5d34" />
 
 ## ✨ Key Features
 
