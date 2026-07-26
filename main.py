@@ -8,10 +8,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from groq import Groq
-from pydantic import BaseModel
-
-import edge_tts
 from gtts import gTTS
+from pydantic import BaseModel
 
 # Load GROQ_API_KEY from a local .env file when running on your own machine.
 # On Render, this same variable is set in the dashboard instead of a file.
@@ -22,9 +20,6 @@ if not GROQ_API_KEY:
     raise RuntimeError("GROQ_API_KEY is missing. Add it to your .env file or Render environment variables.")
 
 groq_client = Groq(api_key=GROQ_API_KEY)
-
-# Default voice used for edge-tts. Full voice list: `edge-tts --list-voices`
-DEFAULT_TTS_VOICE = "en-US-GuyNeural"
 
 # System prompt kept short and spoken-language friendly, since replies
 # may be read aloud by the TTS engine rather than only displayed as text.
@@ -122,20 +117,13 @@ async def text_to_speech(request: TTSRequest):
         raise HTTPException(status_code=400, detail="No text provided for speech synthesis.")
 
     try:
-        communicator = edge_tts.Communicate(clean_text, voice=DEFAULT_TTS_VOICE)
-        audio_buffer = io.BytesIO()
-        async for chunk in communicator.stream():
-            if chunk["type"] == "audio":
-                audio_buffer.write(chunk["data"])
-        audio_buffer.seek(0)
-        return StreamingResponse(audio_buffer, media_type="audio/mpeg")
-    except Exception as e:
-        print("edge-tts failed (likely cloud IP block), falling back to gTTS:", e)
-        tts = gTTS(text=clean_text, lang='en')
+        tts = gTTS(text=clean_text, lang="en")
         audio_buffer = io.BytesIO()
         tts.write_to_fp(audio_buffer)
         audio_buffer.seek(0)
         return StreamingResponse(audio_buffer, media_type="audio/mpeg")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"TTS synthesis failed: {str(e)}")
 
 
 # Serve the frontend (index.html, style.css, app.js) as static files.

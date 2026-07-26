@@ -4,12 +4,13 @@
 ![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)
 ![Groq](https://img.shields.io/badge/Groq-f55036?style=for-the-badge&logo=groq&logoColor=white)
 ![Llama 3](https://img.shields.io/badge/Llama_3-0466c8?style=for-the-badge)
+![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)
 
-A lightning-fast, dark-mode real-time voice chat agent built using FastAPI, Groq's ultra-low latency Llama models, and Whisper transcriptions.
+A lightning-fast, dark-mode real-time voice chat agent built using FastAPI, Groq's ultra-low latency Llama 3 models, Whisper transcriptions, and Google Text-to-Speech (gTTS) for sub-second, highly-responsive conversational AI.
 
 ## 🌐 Live Demo & Media
 
-- **Live App:** [Deploy on Vercel](https://vercel.com) (Update link once deployed)
+- **Live App:** [https://arslan-ai-voice-agent.vercel.app/](https://arslan-ai-voice-agent.vercel.app/)
 - **Demo Video:** *Placeholder for Demo Video*
 
 ## 📸 Screenshots
@@ -22,7 +23,7 @@ A lightning-fast, dark-mode real-time voice chat agent built using FastAPI, Groq
 
 - **⚡ Lightning Fast Responses:** Powered by Groq's Llama 3 models for near-instant AI responses.
 - **🎤 Real-Time Live Call Mode:** Hands-free, continuous conversation that intelligently detects when you stop speaking.
-- **🎧 High-Quality Voice Synthesis:** Utilizes Microsoft Edge TTS to give the AI a natural, conversational voice.
+- **🎧 High-Quality Voice Synthesis:** Utilizes `gTTS` and Web Speech API fallbacks to ensure natural spoken responses locally and in cloud environments.
 - **⌨️ Seamless Typing Sync:** The AI's responses are dynamically typed out on the screen perfectly synced with its spoken voice.
 - **📱 Fully Responsive Design:** Sleek, modern dark-mode neon-green interface that works seamlessly on desktop and mobile.
 
@@ -30,10 +31,10 @@ A lightning-fast, dark-mode real-time voice chat agent built using FastAPI, Groq
 
 | Component | Technology | Purpose |
 | --- | --- | --- |
-| **Backend** | FastAPI (Python) | High-performance API server and static file hosting |
+| **Backend** | FastAPI (Python) | High-performance API server and serverless functions |
 | **LLM Inference** | Groq API | Lightning-fast text generation using Llama 3 |
 | **Transcription (STT)** | Groq Whisper | Converting user voice messages to text |
-| **Speech Synthesis (TTS)** | edge-tts | Generating AI spoken audio responses |
+| **Speech Synthesis (TTS)** | gTTS / Web Speech API | Generating AI spoken audio responses reliably in cloud deployments |
 | **Frontend** | HTML/CSS/JS (Vanilla) | Custom responsive UI with Web Audio API for silence detection |
 
 ## ⚙️ How It Works
@@ -41,7 +42,7 @@ A lightning-fast, dark-mode real-time voice chat agent built using FastAPI, Groq
 1. **Audio Capture:** The browser records user audio (via single message or live call) and sends the blob to the backend.
 2. **Transcription:** The FastAPI backend pipes the audio to Groq's Whisper API to transcribe speech into text.
 3. **LLM Generation:** The transcript, along with conversation history, is sent to Groq's Llama 3 models to instantly generate a contextual reply.
-4. **Speech Synthesis:** The text reply is converted to a high-quality audio stream via `edge-tts`.
+4. **Speech Synthesis:** The text reply is converted to an audio stream via `gTTS` (with browser Web Speech API fallback).
 5. **Playback & Typing:** The frontend receives the audio, begins playback immediately, and dynamically animates the text onto the screen in sync with the audio.
 
 ## 🏗️ Project Architecture
@@ -56,8 +57,8 @@ graph TD
     GroqSTT -->|Transcript| Backend
     Backend -->|Context + Prompt| GroqLLM[Groq Llama 3 Models]
     GroqLLM -->|Text Reply| Backend
-    Backend -->|Text Reply| EdgeTTS[Microsoft Edge TTS]
-    EdgeTTS -->|Audio Stream| Backend
+    Backend -->|Text Reply| CloudTTS[Google TTS / Web Speech API]
+    CloudTTS -->|Audio Stream| Backend
     Backend -->|Audio Response| Frontend
     Frontend -->|Plays Audio & Types Text| User
 ```
@@ -65,11 +66,11 @@ graph TD
 ## 📂 Project Structure
 
 ```
-├── .env.example
+├── .gitignore
 ├── README.md
 ├── main.py
-├── render.yaml
 ├── requirements.txt
+├── vercel.json
 └── static/
     ├── app.js
     ├── index.html
@@ -86,8 +87,8 @@ graph TD
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/Arslan-Codes097/arslan-voice-agent.git
-   cd arslan-voice-agent
+   git clone https://github.com/Arslan-Codes097/Arslan.AI-Voice-Agent-.git
+   cd Arslan.AI-Voice-Agent-
    ```
 
 2. **Set up virtual environment**
@@ -102,11 +103,10 @@ graph TD
    ```
 
 4. **Configure environment variables**
-   Copy `.env.example` to `.env` and add your Groq API key:
+   Create a `.env` file and add your Groq API key:
    ```bash
-   cp .env.example .env
+   GROQ_API_KEY=your_key_here
    ```
-   *Edit `.env` and set `GROQ_API_KEY=your_key_here`*
 
 5. **Run the server**
    ```bash
@@ -119,7 +119,7 @@ graph TD
 This project is configured for 1-click deployment on [Vercel](https://vercel.com).
 1. Push this repository to GitHub.
 2. Sign in to Vercel and click **Add New...** -> **Project**.
-3. Import your GitHub repository.
+3. Import your GitHub repository (`Arslan.AI-Voice-Agent-`).
 4. Leave the Framework Preset as **Other**.
 5. Add the `GROQ_API_KEY` to the Environment Variables section.
 6. Click **Deploy**!
