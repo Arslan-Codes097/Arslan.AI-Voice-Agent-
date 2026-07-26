@@ -9,7 +9,7 @@ A lightning-fast, dark-mode real-time voice chat agent built using FastAPI, Groq
 
 ## 🌐 Live Demo & Media
 
-- **Live App:** [Deploy on Render](https://render.com) (Update link once deployed)
+- **Live App:** [Deploy on Vercel](https://vercel.com) (Update link once deployed)
 - **Demo Video:** *Placeholder for Demo Video*
 
 ## 📸 Screenshots
@@ -114,14 +114,15 @@ graph TD
    ```
    Open `http://localhost:8000` in your browser.
 
-## 🚀 Deployment (Render)
+## 🚀 Deployment (Vercel)
 
-This project is configured for 1-click deployment on [Render](https://render.com).
+This project is configured for 1-click deployment on [Vercel](https://vercel.com).
 1. Push this repository to GitHub.
-2. Connect your GitHub to Render and create a new **Web Service**.
-3. Render will automatically detect the `render.yaml` blueprint.
-4. Add the `GROQ_API_KEY` to the environment variables on the Render dashboard.
-5. Deploy!
+2. Sign in to Vercel and click **Add New...** -> **Project**.
+3. Import your GitHub repository.
+4. Leave the Framework Preset as **Other**.
+5. Add the `GROQ_API_KEY` to the Environment Variables section.
+6. Click **Deploy**!
 
 ## 👤 Author & Credits
 
