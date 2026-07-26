@@ -133,4 +133,5 @@ async def text_to_speech(request: TTSRequest):
 
 # Serve the frontend (index.html, style.css, app.js) as static files.
 # Registered last so it never intercepts the /api/* routes above.
-app.mount("/", StaticFiles(directory="static", html=True), name="static")
+if os.path.isdir("static"):
+    app.mount("/", StaticFiles(directory="static", html=True), name="static")
