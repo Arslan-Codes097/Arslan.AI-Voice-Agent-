@@ -11,7 +11,7 @@ A lightning-fast, dark-mode real-time voice chat agent built using FastAPI, Groq
 ## 🌐 Live Demo & Media
 
 - **Live App:** [https://arslan-ai-voice-agent.vercel.app/](https://arslan-ai-voice-agent.vercel.app/)
-- **Demo Video:** *Placeholder for Demo Video*
+- **Demo Video:** https://www.loom.com/share/fe1341c892214c1787e722d7b40330ca
 
 ## 📸 Screenshots
 
